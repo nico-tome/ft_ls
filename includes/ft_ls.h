@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 13:19:34 by ntome             #+#    #+#             */
-/*   Updated: 2026/06/29 12:47:21 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/02 19:40:17 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdio.h>
+# include <dirent.h>
+# include <sys/types.h>
 # include <sys/stat.h>
 # include "../lib/libft/libft.h"
 # include "color.h"
@@ -41,19 +44,19 @@ typedef struct s_flags
 
 typedef struct s_element
 {
-	char				*path;
 	char				*name;
-
 	int					is_dir;
-	int					hidden;
+	int					type;
 
 	struct stat			stat;
+	struct s_element	*content;
 	struct s_element	*next;
 }				t_element;
 
 void	free_args(t_flags *flags);
 int		ft_init_flags(t_flags *flags, int ac, char **av);
-int		read_files(t_element *elements, t_arg *arg);
+int		read_element(t_element *elements, char *target, t_flags *flags, char *path);
 void	print_help(void);
+void	print_ls(t_element *element, t_flags *flags);
 
 #endif

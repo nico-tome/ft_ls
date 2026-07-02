@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:34:51 by ntome             #+#    #+#             */
-/*   Updated: 2026/06/29 12:25:30 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/02 17:25:41 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,12 @@ int	add_arg(t_flags *flags, char *arg)
 	new = malloc(sizeof(t_arg));
 	if (!new)
 		return (1);
-	new->path = arg;
+	new->path = NULL;
 	new->next = NULL;
 	head = flags->args;
 	while (head->next)
 		head = head->next;
+	head->path = ft_strdup(arg);
 	head->next = new;
 	return (0);
 }

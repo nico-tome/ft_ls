@@ -6,11 +6,12 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:34:09 by ntome             #+#    #+#             */
-/*   Updated: 2026/06/29 12:37:09 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/02 19:27:19 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
+#include <dirent.h>
 
 void	print_help(void)
 {
@@ -28,3 +29,43 @@ void	print_help(void)
 }
 
 // -l -R -r -a -t -d -1
+
+static int	check_print(t_element *element, t_flags *flags)
+{
+	if (element->name[0] == '.' && !flags->a_flag)
+		return (0);
+	return (1);
+}
+
+static void	get_color(t_element *element, char **color)
+{
+	mode_t	mode;
+
+	mode = element->stat.st_mode;
+	*color = RESET;
+	if (S_ISDIR(mode))
+		*color = BLUE;
+	else if (S_ISREG(mode))
+	{
+		if (mode & ((S_IXUSR | S_IXGRP | S_IXOTH)))
+			*color = GREEN;
+		else
+			*color = RESET;
+	}
+}
+
+void	print_ls(t_element *element, t_flags *flags)
+{
+	char	*color;
+
+	while (element && element->name)
+	{
+		if (check_print(element, flags))
+		{
+			get_color(element, &color);
+			printf("%s%s%s  ", color, element->name, RESET);
+		}
+		element = element->next;
+	}
+	printf("\n");
+}

@@ -32,4 +32,17 @@ typedef struct  s_files
     struct  l_file  *next;
 }               t_file;
 ```
+### Sorting
+
+The sorting part is reading the flags given to the project:
+
+-l long listing format
+-R use recursive
+-a not ignore files that start with .
+-r reverse order while sorting
+-t sort by time
+-d list directories
+-1 list one file per line
+	int		d_flag;
+	int		one_flag;
 

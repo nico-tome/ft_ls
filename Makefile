@@ -5,7 +5,8 @@ BUILD_DIR	:=	build/
 
 SRC			:=	main.c \
 				parsing/parse_flags.c \
-				print_utils/print_utils.c
+				print_utils/print_utils.c \
+				read_utils/read_utils.c
 
 OBJ = $(patsubst %.c, $(BUILD_DIR)%.o, $(SRC))
 
