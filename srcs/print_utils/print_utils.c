@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:34:09 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/02 19:27:19 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/03 12:52:59 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	print_help(void)
 	ft_printf("%s-t%s\tsort by date, newest first\n", GREEN, RESET);
 	ft_printf("%s-d%s\tonly show directory names\n", GREEN, RESET);
 	ft_printf("%s-1%s\tshow one file per line\n", GREEN, RESET);
+	ft_printf("%s-D%s\tuse debugg mode\n", GREEN, RESET);
 	ft_printf("%s--help%s\tshow this help\n", GREEN, RESET);
 }
 

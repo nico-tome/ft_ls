@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 13:19:34 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/02 19:40:17 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/03 15:06:19 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "../lib/libft/libft.h"
 # include "color.h"
 
-# define VALID_FLAGS "lRartd1"
+# define VALID_FLAGS "lRartd1D"
 
 typedef struct s_arg
 {
@@ -39,11 +39,12 @@ typedef struct s_flags
 	int		t_flag;
 	int		d_flag;
 	int		one_flag;
-	t_arg	*args;
+	int		debugg_flag;
 }			t_flags;
 
 typedef struct s_element
 {
+	char				*path;
 	char				*name;
 	int					is_dir;
 	int					type;
@@ -53,10 +54,24 @@ typedef struct s_element
 	struct s_element	*next;
 }				t_element;
 
-void	free_args(t_flags *flags);
+typedef struct s_ctx
+{
+	int			exit_code;
+	t_flags		*flags;
+	t_arg		*args;
+	t_element	*elements;
+}				t_ctx;
+
+// free utils
+void	free_args(t_arg *args);
+void	free_elements(t_element *elements);
+
 int		ft_init_flags(t_flags *flags, int ac, char **av);
 int		read_element(t_element *elements, char *target, t_flags *flags, char *path);
+
+// print utils
 void	print_help(void);
 void	print_ls(t_element *element, t_flags *flags);
+void	print_debugg_read_element(char *target, char *path);
 
 #endif

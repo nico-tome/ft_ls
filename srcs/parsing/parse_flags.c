@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:34:51 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/02 17:25:41 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/03 13:14:01 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	update_flag(t_flags *flags, char flag)
 		flags->d_flag = 1;
 	else if (flag == '1')
 		flags->one_flag = 1;
+	else if (flag == 'D')
+		flags->debugg_flag = 1;
 }
 
 int	add_arg(t_flags *flags, char *arg)
@@ -55,7 +57,7 @@ int	parse_flag(t_flags *flags, char *flag)
 	if (!ft_strcmp("--help", flag))
 	{
 		print_help();
-		return (1);
+		return (2);
 	}
 	i = 1;
 	while (flag[i])
@@ -77,8 +79,8 @@ int	ft_init_flags(t_flags *flags, int ac, char **av)
 {
 	int	i;
 
-	i = 1;
-	while (i < ac)
+	i = 0;
+	while (++i < ac)
 	{
 		if (av[i][0] == '-')
 		{
@@ -96,7 +98,6 @@ int	ft_init_flags(t_flags *flags, int ac, char **av)
 				return (1);
 			}
 		}
-		i++;
 	}
 	return (0);
 }
