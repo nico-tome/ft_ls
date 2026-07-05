@@ -36,22 +36,22 @@ _PURPLE := $(shell $(TPUT) setaf 5)
 OBJS_TOTAL = $(words $(OBJ))
 CURR_OBJ = 0
 
-# Uncomment this section to install the program system-wide, allowing it to be executed from anywhere (like 'ls')
-# PREFIX ?= /usr/local
-# BINDIR = $(PREFIX)/bin
+# Install the program in a user-accessible bin directory
+PREFIX ?= $(HOME)/.local
+BINDIR ?= $(PREFIX)/bin
 
 all: ${NAME} banner
 
 no-banner:	${NAME}
 
 banner: # replace this banner with yours
-	@echo "███████╗██╗  ██╗ █████╗ ███╗   ███╗██████╗ ██╗     ███████╗";
-	@echo "██╔════╝╚██╗██╔╝██╔══██╗████╗ ████║██╔══██╗██║     ██╔════╝";
-	@echo "█████╗   ╚███╔╝ ███████║██╔████╔██║██████╔╝██║     █████╗  ";
-	@echo "██╔══╝   ██╔██╗ ██╔══██║██║╚██╔╝██║██╔═══╝ ██║     ██╔══╝  ";
-	@echo "███████╗██╔╝ ██╗██║  ██║██║ ╚═╝ ██║██║     ███████╗███████╗";
-	@echo "╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝     ╚══════╝╚══════╝";
-	@echo "                                                           ";
+	@echo "███████╗████████╗     ██╗     ███████╗";
+	@echo "██╔════╝╚══██╔══╝     ██║     ██╔════╝";
+	@echo "█████╗     ██║        ██║     ███████╗";
+	@echo "██╔══╝     ██║        ██║     ╚════██║";
+	@echo "██║        ██║███████╗███████╗███████║";
+	@echo "╚═╝        ╚═╝╚══════╝╚══════╝╚══════╝";
+	@echo "                                      ";
 
 $(NAME): ${LIBS} ${OBJ}
 	@${CC} -o ${NAME} ${FLAGS} ${OBJ} ${LIBS}
@@ -81,15 +81,32 @@ fclean: clean
 #	@$(MAKE) --no-print-directory clean_flags 2>/dev/null || true
 # remove this line if you don't need to expose your program flag
 
-# Uncomment this section to install the program system-wide, allowing it to be executed from anywhere (like 'ls')
-#
 install: $(NAME)
-	@cp $(NAME) $(BINDIR)/
-	@printf "Installed in $(BINDIR)\n"
+	@DEST=$$(printf "%s\n" "$$PATH" | tr ':' '\n' | while read d; do \
+		[ -d "$$d" ] && [ -w "$$d" ] && { echo "$$d"; break; }; \
+	done); \
+	if [ -z "$$DEST" ]; then \
+		printf "${_RED}No writable directory found in \$$PATH.${_RESET}\n"; \
+		printf "Try installing manually or use sudo.\n"; \
+		exit 1; \
+	fi; \
+	install -m 755 $(NAME) "$$DEST/$(NAME)"; \
+	printf "${_GREEN}Installed${_RESET} in $$DEST\n"
+	@printf "${_YELLOW}Reopen your terminal or run \"hash -r\" to refresh the command cache.${_RESET}\n"
+	@printf "${_YELLOW}Note: If you want to install in a custom directory, use the PREFIX variable.${_RESET}\n"
 
 uninstall:
-	@rm -f $(BINDIR)/$(NAME)
-	@printf "Removed from $(BINDIR)\n"
+	@FOUND=0; \
+	for d in $$(printf "%s\n" "$$PATH" | tr ':' '\n'); do \
+		if [ -f "$$d/$(NAME)" ]; then \
+			rm -f "$$d/$(NAME)"; \
+			printf "${_GREEN}Removed${_RESET} from $$d\n"; \
+			FOUND=1; \
+		fi; \
+	done; \
+	if [ $$FOUND -eq 0 ]; then \
+		printf "${_YELLOW}$(NAME) is not installed in any directory from \$$PATH.${_RESET}\n"; \
+	fi
 
 
 # Uncomment this block if you want to expose your program flags after build
