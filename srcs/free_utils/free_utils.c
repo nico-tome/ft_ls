@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 14:56:15 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/03 15:05:05 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/05 18:51:12 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,35 +16,48 @@ void	free_args(t_arg *args)
 {
 	t_arg	*tmp;
 
-	tmp = args->next;
-	while (args->next)
+	while (args)
 	{
+		tmp = args->next;
 		if (args->path)
 			free(args->path);
 		free(args);
 		args = tmp;
-		tmp = args->next;
 	}
-	if (args->path)
-		free(args->path);
-	free(args);
 }
 
-void	free_elements(t_element *elements)
+static void	free_files(t_file *files)
 {
-	t_element	*tmp;
+	t_file	*tmp;
 
-	tmp = elements->next;
-	while (elements)
+	while (files)
 	{
-		if (elements->path)
-			free(elements->path);
-		if (elements->name)
-			free(elements->name);
-		if (elements->content)
-			free_elements(elements->content);
-		free(elements);
-		elements = tmp;
-		tmp = elements->next;
+		tmp = files->next;
+		if (files->path)
+			free(files->path);
+		if (files->name)
+			free(files->name);
+		free(files);
+		files = tmp;
+	}
+}
+
+void	free_elements(t_dir **dirs)
+{
+	t_dir	*dir;
+	t_dir	*tmp;
+
+	dir = *dirs;
+	while (dir)
+	{
+		tmp = dir->next;
+		if (dir->files)
+			free_files(dir->files);
+		if (dir->content)
+			free_elements(&dir->content);
+		if (dir->path)
+			free(dir->path);
+		free(dir);
+		dir = tmp;
 	}
 }

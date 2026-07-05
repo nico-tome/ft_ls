@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parse_flags.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
+/*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:34:51 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/03 13:14:01 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/05 19:54:55 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
 
-void	update_flag(t_flags *flags, char flag)
+static void	update_flag(t_flags *flags, char flag)
 {
 	if (flag == 'l')
 		flags->l_flag = 1;
@@ -30,9 +30,13 @@ void	update_flag(t_flags *flags, char flag)
 		flags->one_flag = 1;
 	else if (flag == 'D')
 		flags->debugg_flag = 1;
+	else if (flag == 'e')
+		flags->e_flag = 1;
+	else if (flag == 'U')
+		flags->uu_flag = 1;
 }
 
-int	add_arg(t_flags *flags, char *arg)
+static int	add_arg(t_arg *args, char *arg)
 {
 	t_arg	*new;
 	t_arg	*head;
@@ -42,7 +46,7 @@ int	add_arg(t_flags *flags, char *arg)
 		return (1);
 	new->path = NULL;
 	new->next = NULL;
-	head = flags->args;
+	head = args;
 	while (head->next)
 		head = head->next;
 	head->path = ft_strdup(arg);
@@ -50,7 +54,7 @@ int	add_arg(t_flags *flags, char *arg)
 	return (0);
 }
 
-int	parse_flag(t_flags *flags, char *flag)
+static int	parse_flag(t_flags *flags, char *flag)
 {
 	int	i;
 
@@ -64,7 +68,7 @@ int	parse_flag(t_flags *flags, char *flag)
 	{
 		if (!ft_strchr(VALID_FLAGS, flag[i]))
 		{
-			write(2, "ls : invalid option '", 21);
+			write(2, "ft_ls : invalid option '", 24);
 			write(2, &flag[i], 1);
 			write(2, "'\nType « ls -h » for more infos.\n", 33);
 			return (1);
@@ -75,7 +79,7 @@ int	parse_flag(t_flags *flags, char *flag)
 	return (0);
 }
 
-int	ft_init_flags(t_flags *flags, int ac, char **av)
+int	ft_init_flags(t_ctx *ctx, int ac, char **av)
 {
 	int	i;
 
@@ -84,17 +88,17 @@ int	ft_init_flags(t_flags *flags, int ac, char **av)
 	{
 		if (av[i][0] == '-')
 		{
-			if (parse_flag(flags, av[i]))
+			if (parse_flag(&ctx->flags, av[i]))
 			{
-				free_args(flags);
+				free_args(ctx->args);
 				return (1);
 			}
 		}
 		else
 		{
-			if (add_arg(flags, av[i]))
+			if (add_arg(ctx->args, av[i]))
 			{
-				free_args(flags);
+				free_args(ctx->args);
 				return (1);
 			}
 		}

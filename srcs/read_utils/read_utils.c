@@ -6,95 +6,105 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 12:38:04 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/03 13:46:41 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/05 20:19:41 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
 
-static int	read_entry(struct dirent *entry, t_element *element, char *path)
+static t_dir	*create_new_dir(char *path)
 {
-	char	*tmp;
-	char	*complete_path;
+	t_dir	*new;
 
-	complete_path = ft_strjoin(path, entry->d_name);
-	if (!complete_path)
+	new = malloc(sizeof(t_dir));
+	if (!new)
 	{
-		printf("%sMalloc Error: ft_strjoin fail in read_utils.c at line 22%s\n",
-			RED, RESET);
-		return (1);
+		malloc_error("read_utils.c", 110);
+		return (NULL);
 	}
-	element->name = ft_strdup(entry->d_name);
-	element->is_dir = entry->d_type == DT_DIR;
-	printf("real path: %s\n", complete_path);
-	if (lstat(complete_path, &element->stat))
+	new->files = NULL;
+	new->next = NULL;
+	new->content = NULL;
+	new->path = ft_strdup(path);
+	return (new);
+}
+
+static t_file	*create_new_file(t_ctx *ctx, char *path, struct dirent *entry)
+{
+	t_file	*new_file;
+
+	if (!ctx->flags.a_flag && !ctx->flags.ur_flag && entry->d_name[0] == '.')
+		return (NULL);
+	new_file = malloc(sizeof(t_file));
+	if (!new_file)
+		return (NULL);
+	new_file->name = ft_strdup(entry->d_name);
+	new_file->path = ft_strdup(path);
+	new_file->sorting_name = ft_strdup(path);
+	if (!ctx->flags.uu_flag)
+		ft_strlowerise(&new_file->sorting_name);
+	new_file->next = NULL;
+	lstat(path, &new_file->stat);
+	return (new_file);
+}
+
+static void	fill_dir(t_ctx *ctx, t_dir *element, DIR *dir)
+{
+	struct dirent	*entry;
+	t_file			*new_file;
+	char			*path;
+	char			*tmp;
+
+	while ((entry = readdir(dir)) != NULL)
 	{
-		perror("ft_ls\0");
-		return (1);
-	}
-	element->content = NULL;
-	element->type = entry->d_type;
-	free(complete_path);
-	return (0);
-}
-
-static int	create_next(t_element *elements)
-{
-	elements->next = malloc(sizeof(t_element));
-	if (!elements->next)
-		return (1);
-	elements->next->next = NULL;
-	elements->next->name = NULL;
-	elements->next->is_dir = 0;
-	elements->next->content = NULL;
-	elements->next->type = 0;
-	elements = elements->next;
-	return (0);
-}
-
-static int	create_content(t_element *element)
-{
-	element->content = malloc(sizeof(t_element));
-	if (!element->content)
-		return (1);
-	element->content->name = NULL;
-	element->content->content = NULL;
-	element->content->next = NULL;
-	element->content->is_dir = 0;
-	element->content->type = 0;
-	return (0);
-}
-
-static int	rec(t_element *elements, char *target, t_flags *flags, char *path)
-{
-	char	*complete_path;
-	char	*tmp;
-
-	tmp = ft_strjoin(target, "/");
-	if (!tmp)
-		return (1);
-	complete_path = ft_strjoin(path, tmp);
-	free(tmp);
-	if (!complete_path)
-		return (1);
-	while (elements)
-	{
-		if (elements->is_dir)
+		tmp = ft_strjoin(element->path, "/");
+		if (tmp)
 		{
-			if (create_content(elements))
-				read_element(elements->content, elements->name, flags, complete_path);
+			path = ft_strjoin(tmp, entry->d_name);
+			free(tmp);
+			if (path)
+			{
+				new_file = create_new_file(ctx, path, entry);
+				if (new_file)
+					insert_new_file(ctx, &element, new_file);
+				free(path);
+			}
 		}
-		elements = elements->next;
 	}
-	free(complete_path);
-	return (0);
 }
 
-int	read_element(t_element *elements, char *target, t_flags *flags, char *path)
+static void	rec(t_ctx *ctx, t_dir **element)
 {
-	char	*real_path;
+	t_file	*file;
 
-	real_path = create_path(path, taget);
-	if (!real_path)
-		return (1);
+	file = (*element)->files;
+	while (file)
+	{
+		if (ctx->flags.debugg_flag)
+			print_debugg_file(file);
+		if (S_ISDIR(file->stat.st_mode) && file->name[0] != '.')
+			read_target(ctx, file->path, &((*element)->content));
+		file = file->next;
+	}
+}
+
+void	read_target(t_ctx *ctx, char *path, t_dir **elements)
+{
+	t_dir	*new_element;
+	DIR		*dir;
+
+	new_element = create_new_dir(path);
+	if (!new_element)
+		return ;
+	dir = opendir(path);
+	if (!dir)
+	{
+		perror("ft_ls: opendir");
+		return ;
+	}
+	fill_dir(ctx, new_element, dir);
+	closedir(dir);
+	if (ctx->flags.ur_flag)
+		rec(ctx, &new_element);
+	insert_new_dir(ctx, elements, new_element);
 }

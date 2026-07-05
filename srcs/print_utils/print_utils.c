@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:34:09 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/03 12:52:59 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/05 19:28:01 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,18 @@ void	print_help(void)
 
 // -l -R -r -a -t -d -1
 
-static int	check_print(t_element *element, t_flags *flags)
+static int	check_print(t_file *file, t_flags *flags)
 {
-	if (element->name[0] == '.' && !flags->a_flag)
+	if (file->name[0] == '.' && !flags->a_flag)
 		return (0);
 	return (1);
 }
 
-static void	get_color(t_element *element, char **color)
+static void	get_color(t_file *file, char **color)
 {
 	mode_t	mode;
 
-	mode = element->stat.st_mode;
+	mode = file->stat.st_mode;
 	*color = RESET;
 	if (S_ISDIR(mode))
 		*color = BLUE;
@@ -55,18 +55,47 @@ static void	get_color(t_element *element, char **color)
 	}
 }
 
-void	print_ls(t_element *element, t_flags *flags)
+static void	print_files(t_ctx *ctx, t_file *files)
 {
+	int		code;
 	char	*color;
 
-	while (element && element->name)
+	code = 0;
+	while (files)
 	{
-		if (check_print(element, flags))
+		if (check_print(files, &ctx->flags))
 		{
-			get_color(element, &color);
-			printf("%s%s%s  ", color, element->name, RESET);
+			code = 1;
+			get_color(files, &color);
+			ft_printf("%s%s%s  ", color, files->name, RESET);
 		}
-		element = element->next;
+		files = files->next;
 	}
-	printf("\n");
+	if (code)
+		ft_printf("\n");
+}
+
+void	print_ls(t_ctx *ctx, t_dir **dirs)
+{
+	t_dir	*dir;
+
+	if (!dirs || !*dirs)
+		return ;
+	dir = *dirs;
+	while (dir)
+	{
+		if (ctx->print_path || ctx->flags.ur_flag)
+			ft_printf("%s:\n", dir->path);
+		if (dir->files)
+			print_files(ctx, dir->files);
+		if (ctx->flags.ur_flag && dir->content)
+		{
+			ft_printf("\n");
+			print_ls(ctx, &dir->content);
+		}
+		dir = dir->next;
+		if (dir)
+			ft_printf("\n");
+	}
+	ft_printf("\n");
 }
