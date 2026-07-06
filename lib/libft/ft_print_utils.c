@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 01:39:48 by ntome             #+#    #+#             */
-/*   Updated: 2025/11/12 22:10:20 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 19:57:55 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,23 @@ int	ft_write_unsigned(unsigned int nb)
 	else
 	{
 		ft_write_unsigned(nb / 10);
+		ft_write_char(nb % 10 + '0');
+	}
+	return (size);
+}
+
+int	ft_write_long_long(long long int nb)
+{
+	int	size;
+
+	size = ft_get_long_long_size(nb);
+	if (nb <= 0)
+		ft_write_char('0');
+	else if (nb < 10)
+		ft_write_char(nb + '0');
+	else
+	{
+		ft_write_long_long(nb / 10);
 		ft_write_char(nb % 10 + '0');
 	}
 	return (size);

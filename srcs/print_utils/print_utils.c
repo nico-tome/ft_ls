@@ -6,12 +6,11 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:34:09 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/05 19:28:01 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 22:36:25 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
-#include <dirent.h>
 
 void	print_help(void)
 {
@@ -29,73 +28,101 @@ void	print_help(void)
 	ft_printf("%s--help%s\tshow this help\n", GREEN, RESET);
 }
 
-// -l -R -r -a -t -d -1
-
-static int	check_print(t_file *file, t_flags *flags)
+int	check_print(t_file *file, t_flags *flags)
 {
-	if (file->name[0] == '.' && !flags->a_flag)
+	if (file->name[0] == '.' && !flags->a_flag && !flags->d_flag)
 		return (0);
 	return (1);
 }
 
-static void	get_color(t_file *file, char **color)
+char	get_file_type(t_file *file)
 {
 	mode_t	mode;
 
 	mode = file->stat.st_mode;
-	*color = RESET;
 	if (S_ISDIR(mode))
-		*color = BLUE;
+		return ('d');
 	else if (S_ISREG(mode))
+		return ('-');
+	else if (S_ISLNK(mode))
+		return ('l');
+	else if (S_ISCHR(mode))
+		return ('c');
+	else if (S_ISBLK(mode))
+		return ('b');
+	else if (S_ISFIFO(mode))
+		return ('p');
+	else if (S_ISSOCK(mode))
+		return ('s');
+	return ('-');
+}
+
+void	get_color(t_file *file, char **color)
+{
+	char	type;
+
+	type = get_file_type(file);
+	*color = RESET;
+	if (type == 'd')
+		*color = BLUE;
+	else if (type == '-')
 	{
-		if (mode & ((S_IXUSR | S_IXGRP | S_IXOTH)))
+		if (file->stat.st_mode & ((S_IXUSR | S_IXGRP | S_IXOTH)))
 			*color = GREEN;
 		else
 			*color = RESET;
 	}
 }
 
-static void	print_files(t_ctx *ctx, t_file *files)
+void	print_permission(t_file *file)
 {
-	int		code;
-	char	*color;
+	ft_printf("%c", (file->stat.st_mode & S_IRUSR) ? 'r' : '-');
+	ft_printf("%c", (file->stat.st_mode & S_IWUSR) ? 'w' : '-');
+	ft_printf("%c", (file->stat.st_mode & S_IXUSR) ? 'x' : '-');
 
-	code = 0;
-	while (files)
-	{
-		if (check_print(files, &ctx->flags))
-		{
-			code = 1;
-			get_color(files, &color);
-			ft_printf("%s%s%s  ", color, files->name, RESET);
-		}
-		files = files->next;
-	}
-	if (code)
-		ft_printf("\n");
+	ft_printf("%c", (file->stat.st_mode & S_IRGRP) ? 'r' : '-');
+	ft_printf("%c", (file->stat.st_mode & S_IWGRP) ? 'w' : '-');
+	ft_printf("%c", (file->stat.st_mode & S_IXGRP) ? 'x' : '-');
+
+	ft_printf("%c", (file->stat.st_mode & S_IROTH) ? 'r' : '-');
+	ft_printf("%c", (file->stat.st_mode & S_IWOTH) ? 'w' : '-');
+	ft_printf("%c", (file->stat.st_mode & S_IXOTH) ? 'x' : '-');
+
+	ft_printf(" ");
 }
 
-void	print_ls(t_ctx *ctx, t_dir **dirs)
+t_padding	get_padding(t_ctx *ctx, t_file *files)
 {
-	t_dir	*dir;
+	t_padding	padd;
+	t_padding	tmp;
+	char		*date;
 
-	if (!dirs || !*dirs)
-		return ;
-	dir = *dirs;
-	while (dir)
+	ft_bzero(&padd, sizeof(t_padding));
+	if (!ctx->flags.l_flag && !ctx->flags.s_flag)
+		return (padd);
+	while (files)
 	{
-		if (ctx->print_path || ctx->flags.ur_flag)
-			ft_printf("%s:\n", dir->path);
-		if (dir->files)
-			print_files(ctx, dir->files);
-		if (ctx->flags.ur_flag && dir->content)
+		if (!check_print(files, &ctx->flags))
 		{
-			ft_printf("\n");
-			print_ls(ctx, &dir->content);
+			files = files->next;
+			continue ;
 		}
-		dir = dir->next;
-		if (dir)
-			ft_printf("\n");
+		date = ctime(&files->stat.st_mtim.tv_sec);
+		date[ft_strlen(date) - 9] = '\0';
+		tmp.block = ft_get_int_size(files->stat.st_blocks / 2);
+		tmp.link = ft_get_int_size(files->stat.st_nlink);
+		tmp.name = ft_strlen(getpwuid(files->stat.st_uid)->pw_name);
+		tmp.group = ft_strlen(getgrgid(files->stat.st_gid)->gr_name);
+		tmp.size = ft_get_long_long_size(files->stat.st_size);
+		tmp.date = ft_strlen(date);
+		padd.block = tmp.block > padd.block ? tmp.block : padd.block;
+		padd.link = tmp.link > padd.link ? tmp.link : padd.link;
+		padd.name = tmp.name > padd.name ? tmp.name : padd.name;
+		padd.group = tmp.group > padd.group ? tmp.group : padd.group;
+		padd.size = tmp.size > padd.size ? tmp.size : padd.size;
+		padd.date = tmp.date > padd.date ? tmp.date : padd.date;
+		padd.total_size += files->stat.st_blocks / 2;
+		files = files->next;
 	}
-	ft_printf("\n");
+	return (padd);
 }

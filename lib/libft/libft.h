@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 11:43:53 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/05 20:00:28 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 20:00:35 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,12 @@ int		ft_print_flag(const char c, va_list params);
 int		ft_write_char(char c);
 int		ft_write_str(char *str);
 int		ft_put_nbr(int nb);
+int		ft_write_long_long(long long int nb);
 int		ft_write_hexa(unsigned int nb, int upper);
 int		ft_write_ptr(void *ptr);
 int		ft_write_unsigned(unsigned int nb);
 int		ft_get_int_size(int n);
+int		ft_get_long_long_size(long long int nb);
 int		ft_get_ptr_size(void *ptr);
 int		ft_get_unsigned_size(unsigned int n);
 int		ft_get_hexa_size(unsigned int n);

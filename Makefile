@@ -8,6 +8,7 @@ SRC			:=	main.c \
 				parsing/parse_flags.c \
 				print_utils/print_utils.c \
 				print_utils/print_debugg_utils.c \
+				print_utils/print_ls.c \
 				read_utils/read_utils.c \
 				sort_utils/sort_dir.c \
 				sort_utils/sort_file.c

@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/05 17:35:50 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/05 20:18:51 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 21:56:13 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,14 @@ static void	insert_by_time(t_dir **dir, t_file *new)
 {
 	t_file	*curr;
 
-	if (new->stat.st_mtim.tv_nsec > (*dir)->files->stat.st_mtim.tv_nsec)
+	if (new->stat.st_mtim.tv_sec > (*dir)->files->stat.st_mtim.tv_sec)
 	{
 		new->next = (*dir)->files;
 		(*dir)->files = new;
 		return ;
 	}
 	curr = (*dir)->files;
-	while (curr->next && new->stat.st_mtim.tv_nsec < curr->next->stat.st_mtim.tv_nsec)
+	while (curr->next && new->stat.st_mtim.tv_sec < curr->next->stat.st_mtim.tv_sec)
 		curr = curr->next;
 	new->next = curr->next;
 	curr->next = new;
@@ -67,14 +67,14 @@ static void	insert_by_reverse_time(t_dir **dir, t_file *new)
 {
 	t_file	*curr;
 
-	if (new->stat.st_mtim.tv_nsec < (*dir)->files->stat.st_mtim.tv_nsec)
+	if (new->stat.st_mtim.tv_sec < (*dir)->files->stat.st_mtim.tv_sec)
 	{
 		new->next = (*dir)->files;
 		(*dir)->files = new;
 		return ;
 	}
 	curr = (*dir)->files;
-	while (curr->next && new->stat.st_mtim.tv_nsec > curr->next->stat.st_mtim.tv_nsec)
+	while (curr->next && new->stat.st_mtim.tv_sec > curr->next->stat.st_mtim.tv_sec)
 		curr = curr->next;
 	new->next = curr->next;
 	curr->next = new;

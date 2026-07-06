@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 13:19:34 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/05 19:52:50 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 21:03:46 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "libs.h"
 
-# define VALID_FLAGS "lRartd1DeU"
+# define VALID_FLAGS "lRartd1DeUQs"
 
 typedef struct s_arg
 {
@@ -31,11 +31,24 @@ typedef struct s_flags
 	int		r_flag;			// -r reverse sorting
 	int		t_flag;			// -t sort by time
 	int		d_flag;			// -d list dir, not files
+	int		s_flag;			// -s show the size of the file in block
 	int		one_flag;		// -1 one line per output
+	int		uq_flag;		// -Q put names in quotes
 	int		e_flag;			// -e use emojies in ouput
 	int		uu_flag;		// -U sort while keeping lowercase and uppercase
 	int		debugg_flag;	// -D use debugg print (mine)
 }			t_flags;
+
+typedef struct s_padding
+{
+	int	block;
+	int	link;
+	int	name;
+	int	group;
+	int	size;
+	int	date;
+	int	total_size;
+}				t_padding;
 
 typedef struct s_file
 {
@@ -74,7 +87,7 @@ void	free_elements(t_dir **elements);
 int		ft_init_flags(t_ctx *ctx, int ac, char **av);
 
 // read utils
-void	read_target(t_ctx *ctx, char *path, t_dir **elements);
+void	read_target(t_ctx *ctx, char *path, t_dir **elements, t_dir **files);
 
 // sort utils
 void	insert_new_dir(t_ctx *ctx, t_dir **elements, t_dir *new_dir);
@@ -82,9 +95,14 @@ void	insert_new_file(t_ctx *ctx, t_dir **elements, t_file *new_file);
 
 // print utils
 void	print_help(void);
-void	print_ls(t_ctx *ctx, t_dir **dir);
+void	print_ls(t_ctx *ctx, t_dir **files, t_dir **dir);
 void	print_debugg_read_element(char *target, char *path);
 void	print_debugg_file(t_file *file);
 void	malloc_error(char *file, int line);
+int		check_print(t_file *file, t_flags *flags);
+char	get_file_type(t_file *file);
+void	get_color(t_file *file, char **color);
+void	print_permission(t_file *file);
+t_padding	get_padding(t_ctx *ctx, t_file *files);
 
 #endif

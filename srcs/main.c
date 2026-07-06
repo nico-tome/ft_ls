@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 14:46:42 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/05 19:56:07 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 20:46:06 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,7 @@
 
 static int	setup(t_ctx *ctx)
 {
-	ctx->flags.l_flag = 0;
-	ctx->flags.r_flag = 0;
-	ctx->flags.t_flag = 0;
-	ctx->flags.a_flag = 0;
-	ctx->flags.d_flag = 0;
-	ctx->flags.e_flag = 0;
-	ctx->flags.ur_flag = 0;
-	ctx->flags.uu_flag = 0;
-	ctx->flags.one_flag = 0;
-	ctx->flags.debugg_flag = 0;
+	ft_bzero(&ctx->flags, sizeof(t_flags));
 	ctx->args = malloc(sizeof(t_arg));
 	if (!ctx->args)
 		return (1);
@@ -38,11 +29,20 @@ int	main(int ac, char **av)
 	t_ctx	ctx;
 	t_arg	*target;
 	t_dir	*elements;
+	t_dir	*files;
 
 	ctx.exit_code = 0;
 	ctx.print_path = -1;
 	ctx.args = NULL;
 	elements = NULL;
+	files = malloc(sizeof(t_dir));
+	if (!files)
+		return (1);
+	files->files = NULL;
+	files->next = NULL;
+	files->path = NULL;
+	files->sorting_path = NULL;
+	files->content = NULL;
 	if (setup(&ctx))
 		return (1);
 	if (ft_init_flags(&ctx, ac, av))
@@ -53,11 +53,12 @@ int	main(int ac, char **av)
 	while (target && target->path)
 	{
 		ctx.print_path++;
-		read_target(&ctx, target->path, &elements);
+		read_target(&ctx, target->path, &elements, &files);
 		target = target->next;
 	}
-	print_ls(&ctx, &elements);
+	print_ls(&ctx, &files, &elements);
 	free_args(ctx.args);
 	free_elements(&elements);
+	free_elements(&files);
 	return (ctx.exit_code);
 }

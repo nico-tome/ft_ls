@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 14:56:15 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/05 18:51:12 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 18:27:43 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ static void	free_files(t_file *files)
 			free(files->path);
 		if (files->name)
 			free(files->name);
+		if (files->sorting_name)
+			free(files->sorting_name);
 		free(files);
 		files = tmp;
 	}
@@ -57,6 +59,8 @@ void	free_elements(t_dir **dirs)
 			free_elements(&dir->content);
 		if (dir->path)
 			free(dir->path);
+		if (dir->sorting_path)
+			free(dir->sorting_path);
 		free(dir);
 		dir = tmp;
 	}

@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:34:51 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/05 19:54:55 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 20:54:18 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ static void	update_flag(t_flags *flags, char flag)
 		flags->e_flag = 1;
 	else if (flag == 'U')
 		flags->uu_flag = 1;
+	else if (flag == 'Q')
+		flags->uq_flag = 1;
+	else if (flag == 's')
+		flags->s_flag = 1;
 }
 
 static int	add_arg(t_arg *args, char *arg)

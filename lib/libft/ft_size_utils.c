@@ -6,13 +6,30 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 02:06:42 by ntome             #+#    #+#             */
-/*   Updated: 2025/11/12 22:10:50 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 19:59:30 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 int	ft_get_int_size(int n)
+{
+	int	size;
+
+	size = 0;
+	if (n == 0)
+		return (1);
+	if (n < 0)
+		size++;
+	while (n != 0)
+	{
+		n /= 10;
+		size++;
+	}
+	return (size);
+}
+
+int	ft_get_long_long_size(long long int n)
 {
 	int	size;
 

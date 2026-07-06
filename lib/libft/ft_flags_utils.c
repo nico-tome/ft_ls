@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 11:04:22 by ntome             #+#    #+#             */
-/*   Updated: 2025/11/12 22:10:03 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/06 19:55:07 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ int	ft_print_flag(const char c, va_list params)
 		return (ft_put_nbr(va_arg(params, int)));
 	else if (c == 'u')
 		return (ft_write_unsigned(va_arg(params, unsigned int)));
+	else if (c == 'l')
+		return (ft_write_long_long(va_arg(params, long long)));
 	else if (c == 'x' || c == 'X')
 		return (ft_write_hexa(va_arg(params, unsigned int), c == 'x'));
 	else if (c == '%')
