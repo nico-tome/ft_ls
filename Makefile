@@ -36,9 +36,16 @@ _PURPLE := $(shell $(TPUT) setaf 5)
 OBJS_TOTAL = $(words $(OBJ))
 CURR_OBJ = 0
 
-# Install the program in a user-accessible bin directory
+# User installation
 PREFIX ?= $(HOME)/.local
 BINDIR ?= $(PREFIX)/bin
+
+# Shell completions
+BASH_COMPLETION_DIR := $(PREFIX)/share/bash-completion/completions
+ZSH_COMPLETION_DIR := $(PREFIX)/share/zsh/site-functions
+
+ZSHRC := $(HOME)/.zshrc
+BASHRC := $(HOME)/.bashrc
 
 all: ${NAME} banner
 
@@ -78,20 +85,69 @@ fclean: clean
 	@printf "Cleaned ${_BOLD}${NAME}${_RESET} !\n\n"
 
 install: $(NAME)
-	@mkdir -p $(BINDIR)
-	@install -m 755 $(NAME) $(BINDIR)/$(NAME)
+	@printf "${_BOLD}Installing $(NAME)...${_RESET}\n"
+
+	@install -Dm755 $(NAME) $(BINDIR)/$(NAME)
 	@printf "${_GREEN}Installed${_RESET} $(NAME) in ${_BOLD}$(BINDIR)${_RESET}\n"
-	@printf "${_YELLOW}If ${_BOLD}$(BINDIR)${_RESET}${_YELLOW} is not in your PATH, add:${_RESET}\n"
-	@printf "  export PATH=\"$(BINDIR):\$$PATH\"\n"
-	@printf "${_YELLOW}Run \"hash -r\" or reopen your terminal if the command is not found.${_RESET}\n"
+
+	@if [ -f completions/bash/$(NAME) ]; then \
+		install -Dm644 \
+			completions/bash/$(NAME) \
+			$(BASH_COMPLETION_DIR)/$(NAME); \
+		printf "${_GREEN}Installed${_RESET} bash completion\n"; \
+		if ! grep -q "$(BASH_COMPLETION_DIR)" $(BASHRC) 2>/dev/null; then \
+			printf "\n# ft_ls bash completion\nsource $(BASH_COMPLETION_DIR)/$(NAME)\n" >> $(BASHRC); \
+			printf "${_GREEN}Updated${_RESET} ~/.bashrc\n"; \
+		fi; \
+	fi
+
+	@if [ -f completions/zsh/_$(NAME) ]; then \
+		install -Dm644 \
+			completions/zsh/_$(NAME) \
+			$(ZSH_COMPLETION_DIR)/_$(NAME); \
+		printf "${_GREEN}Installed${_RESET} zsh completion\n"; \
+		if ! grep -q "$(PREFIX)/share/zsh/site-functions" $(ZSHRC) 2>/dev/null; then \
+			printf "\n# ft_ls zsh completion\nfpath=($(PREFIX)/share/zsh/site-functions \$$fpath)\nautoload -Uz compinit && compinit\n" >> $(ZSHRC); \
+			printf "${_GREEN}Updated${_RESET} ~/.zshrc\n"; \
+		fi; \
+	fi
+	
+	@if ! grep -q "$(BINDIR)" $(BASHRC) 2>/dev/null; then \
+		printf "\n# ft_ls path\nexport PATH=\"$(BINDIR):\$$PATH\"\n" >> $(BASHRC); \
+	fi
+	
+	@if ! grep -q "$(BINDIR)" $(ZSHRC) 2>/dev/null; then \
+		printf "\n# ft_ls path\nexport PATH=\"$(BINDIR):\$$PATH\"\n" >> $(ZSHRC); \
+	fi
+
+	@printf "\n${_GREEN}Installation complete.${_RESET}\n"
+	@printf "${_YELLOW}Restart your terminal or run:${_RESET}\n"
+	@printf "  source ~/.bashrc\n"
+	@printf "  source ~/.zshrc\n"
 
 uninstall:
-	@if [ -f "$(BINDIR)/$(NAME)" ]; then \
-		rm -f "$(BINDIR)/$(NAME)"; \
-		printf "${_GREEN}Removed${_RESET} $(BINDIR)/$(NAME)\n"; \
-	else \
-		printf "${_YELLOW}$(NAME) is not installed in $(BINDIR).${_RESET}\n"; \
+	@printf "${_BOLD}Removing $(NAME)...${_RESET}\n"
+
+	@rm -f $(BINDIR)/$(NAME)
+	@rm -f $(BASH_COMPLETION_DIR)/$(NAME)
+	@rm -f $(ZSH_COMPLETION_DIR)/_$(NAME)
+
+	@printf "${_GREEN}Removed${_RESET} $(NAME)\n"
+
+	@if [ -f $(BASHRC) ]; then \
+		sed -i '/# ft_ls bash completion/d' $(BASHRC); \
+		sed -i '\|$(BASH_COMPLETION_DIR)/$(NAME)|d' $(BASHRC); \
+		sed -i '/# ft_ls path/d' $(BASHRC); \
+		sed -i '\|export PATH="$(BINDIR):\$$PATH"|d' $(BASHRC); \
 	fi
+
+	@if [ -f $(ZSHRC) ]; then \
+		sed -i '/# ft_ls zsh completion/d' $(ZSHRC); \
+		sed -i '\|fpath=($(PREFIX)/share/zsh/site-functions \$$fpath)|d' $(ZSHRC); \
+		sed -i '\|autoload -Uz compinit && compinit|d' $(ZSHRC); \
+	fi
+
+	@printf "${_GREEN}Uninstall complete.${_RESET}\n"
 
 help:
 	@printf "\n${_BOLD}${_PURPLE}Project Makefile Help${_RESET}\n"

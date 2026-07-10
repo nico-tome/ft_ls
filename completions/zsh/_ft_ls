@@ -1,0 +1,47 @@
+#compdef ft_ls
+
+_ft_ls()
+{
+	local -a opts
+
+	opts=(
+		'-a:show hidden files'
+		'--all:show hidden files'
+		'-A:show almost all files'
+		'--almost-all:show almost all files'
+		'--author:display author with long format'
+		'-d:display directory itself'
+		'--directory:display directory itself'
+		'-g:long format without owner'
+		'-G:hide group'
+		'--no-group:hide group'
+		'-l:long format'
+		'-m:comma separated output'
+		'-n:numeric uid and gid'
+		'--numeric-uid-gid:numeric uid and gid'
+		'-p:add / after directories'
+		'-Q:quote names'
+		'--quote-names:quote names'
+		'-r:reverse sort order'
+		'--reverse:reverse sort order'
+		'-R:recursive directories'
+		'--recursive:recursive directories'
+		'-s:display allocated size'
+		'--size:display allocated size'
+		'-t:sort by date'
+		'-1:one file per line'
+		'--help:show help'
+		'-e:use emojis'
+		'--emojies:use emojis'
+		'-U:keep uppercase sorting'
+		'--keep-uppercase:keep uppercase sorting'
+		'--only-dir:show only directories'
+		'--no-color:disable colors'
+	)
+
+	_arguments \
+		'*:file:_files' \
+		$opts
+}
+
+_ft_ls

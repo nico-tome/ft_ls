@@ -1,0 +1,54 @@
+_ft_ls()
+{
+	local cur prev opts
+
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+	opts="
+	-a
+	--all
+	-A
+	--almost-all
+	--author
+	-d
+	--directory
+	-g
+	-G
+	--no-group
+	-l
+	-m
+	-n
+	--numeric-uid-gid
+	-p
+	-Q
+	--quote-names
+	-r
+	--reverse
+	-R
+	--recursive
+	-s
+	--size
+	-t
+	-1
+	--help
+	-e
+	--emojies
+	-U
+	--keep-uppercase
+	--only-dir
+	--no-color
+	"
+
+	# Complétion des flags
+	if [[ "$cur" == -* ]]; then
+		COMPREPLY=( $(compgen -W "$opts" -- "$cur") )
+		return 0
+	fi
+
+	# Sinon compléter les fichiers
+	COMPREPLY=( $(compgen -f "$cur") )
+}
+
+complete -F _ft_ls ft_ls
