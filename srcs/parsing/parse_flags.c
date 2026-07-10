@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:34:51 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/10 16:01:26 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 16:23:24 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ static int	parse_flag(int *exit_code, t_flags *flags, char *flag)
 			*exit_code = 2;
 			write(2, "ft_ls : invalid option '", 24);
 			write(2, &flag[i], 1);
-			write(2, "'\nType « ls -h » for more infos.\n", 35);
+			write(2, "'\nType « ft_ls --help » for more infos.\n", 42);
 			return (1);
 		}
 		update_flag(flags, flag[i]);
