@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 13:19:34 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/06 21:03:46 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 12:07:15 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "libs.h"
 
-# define VALID_FLAGS "lRartd1DeUQs"
+# define VALID_FLAGS "lRartAdgGmnps1QeUD"
 
 typedef struct s_arg
 {
@@ -25,17 +25,29 @@ typedef struct s_arg
 
 typedef struct s_flags
 {
+	// manda flags
 	int		l_flag;			// -l use long fromat display
 	int		ur_flag;		// -R recursive reading
-	int		a_flag;			// -a read all files
+	int		a_flag;			// -a --all read all files
 	int		r_flag;			// -r reverse sorting
 	int		t_flag;			// -t sort by time
-	int		d_flag;			// -d list dir, not files
+	// bonus flags
+	int		ua_flag;		// -A --almost-all dont show . and ..
+	int		auth_flag;		// --author with -l show the author of the file
+	int		d_flag;			// -d --directory list dir, not files
+	int		g_flag;			// -g like -l but without owner
+	int		ug_flag;		// -G --no-group with -l or -g but without groups
+	int		m_flag;			// -m put a comma after each file
+	int		n_flag;			// -n --numeric-uid-gid like -l but use numeric uid and gid
+	int		p_flag;			// -p --directory-indicator aapend / after each dir
+	int		uq_flag;		// -Q put names in quotes
 	int		s_flag;			// -s show the size of the file in block
 	int		one_flag;		// -1 one line per output
-	int		uq_flag;		// -Q put names in quotes
-	int		e_flag;			// -e use emojies in ouput
-	int		uu_flag;		// -U sort while keeping lowercase and uppercase
+	// custom flags
+	int		e_flag;			// -e --emojies use emojies in ouput
+	int		uu_flag;		// -U --keep-uppercase sort while keeping lowercase and uppercase
+	int		only_dir_flag;	// --only-dir show only directorys
+	int		no_color_flag;	// --no-color disable color
 	int		debugg_flag;	// -D use debugg print (mine)
 }			t_flags;
 
@@ -94,15 +106,17 @@ void	insert_new_dir(t_ctx *ctx, t_dir **elements, t_dir *new_dir);
 void	insert_new_file(t_ctx *ctx, t_dir **elements, t_file *new_file);
 
 // print utils
-void	print_help(void);
-void	print_ls(t_ctx *ctx, t_dir **files, t_dir **dir);
-void	print_debugg_read_element(char *target, char *path);
-void	print_debugg_file(t_file *file);
-void	malloc_error(char *file, int line);
-int		check_print(t_file *file, t_flags *flags);
-char	get_file_type(t_file *file);
-void	get_color(t_file *file, char **color);
-void	print_permission(t_file *file);
+void		print_help(void);
+void		print_ls(t_ctx *ctx, t_dir **files, t_dir **dir);
+void		print_debugg_read_element(char *target, char *path);
+void		print_debugg_file(t_file *file);
+void		malloc_error(char *file, int line);
+int			check_print(t_file *file, t_flags *flags);
+int			check_long_format(t_flags *flags);
+void		get_long_value(t_flags *flags, t_file *file, char **name, char **group);
+char		get_file_type(t_file *file);
+void		get_color(t_flags *flags, t_file *file, char **color);
+void		print_permission(t_file *file);
 t_padding	get_padding(t_ctx *ctx, t_file *files);
 
 #endif

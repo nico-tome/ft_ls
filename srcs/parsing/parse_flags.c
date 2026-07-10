@@ -6,13 +6,13 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:34:51 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/06 20:54:18 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/09 21:38:32 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
 
-static void	update_flag(t_flags *flags, char flag)
+static int	update_flag(t_flags *flags, char flag)
 {
 	if (flag == 'l')
 		flags->l_flag = 1;
@@ -24,8 +24,22 @@ static void	update_flag(t_flags *flags, char flag)
 		flags->r_flag = 1;
 	else if (flag == 't')
 		flags->t_flag = 1;
+	else if (flag == 'A')
+		flags->ua_flag = 1;
+	else if (flag == '@')
+		flags->auth_flag = 1;
 	else if (flag == 'd')
 		flags->d_flag = 1;
+	else if (flag == 'g')
+		flags->g_flag = 1;
+	else if (flag == 'G')
+		flags->ug_flag = 1;
+	else if (flag == 'm')
+		flags->m_flag = 1;
+	else if (flag == 'n')
+		flags->n_flag = 1;
+	else if (flag == 'p')
+		flags->p_flag = 1;
 	else if (flag == '1')
 		flags->one_flag = 1;
 	else if (flag == 'D')
@@ -38,6 +52,11 @@ static void	update_flag(t_flags *flags, char flag)
 		flags->uq_flag = 1;
 	else if (flag == 's')
 		flags->s_flag = 1;
+	else if (flag == '%')
+		flags->only_dir_flag = 1;
+	else if (flag == '&')
+		flags->no_color_flag = 1;
+	return (0);
 }
 
 static int	add_arg(t_arg *args, char *arg)
@@ -58,14 +77,59 @@ static int	add_arg(t_arg *args, char *arg)
 	return (0);
 }
 
+static int	parse_long_flag(t_flags *flags, char *flag)
+{
+	if (!ft_strcmp(flag, "--help"))
+	{
+		print_help();
+		return (1);
+	}
+	if (!ft_strcmp(flag, "--all"))
+		return (update_flag(flags, 'a'));
+	else if (!ft_strcmp(flag, "--almost-all"))
+		return (update_flag(flags, 'A'));
+	else if (!ft_strcmp(flag, "--author"))
+		return (update_flag(flags, '@'));
+	else if (!ft_strcmp(flag, "--directory"))
+		return (update_flag(flags, 'd'));
+	else if (!ft_strcmp(flag, "--no-group"))
+		return (update_flag(flags, 'G'));
+	else if (!ft_strcmp(flag, "--numeric-uid-gid"))
+		return (update_flag(flags, 'n'));
+	else if (!ft_strcmp(flag, "--directory-indicator"))
+		return (update_flag(flags, 'p'));
+	else if (!ft_strcmp(flag, "--emojies"))
+		return (update_flag(flags, 'e'));
+	else if (!ft_strcmp(flag, "--keep-uppercase"))
+		return (update_flag(flags, 'U'));
+	else if (!ft_strcmp(flag, "--only-dir"))
+		return (update_flag(flags, '%'));
+	else if (!ft_strcmp(flag, "--quote-names"))
+		return (update_flag(flags, 'Q'));
+	else if (!ft_strcmp(flag, "--reverse"))
+		return (update_flag(flags, 'r'));
+	else if (!ft_strcmp(flag, "--size"))
+		return (update_flag(flags, 's'));
+	else if (!ft_strcmp(flag, "--no-color"))
+		return (update_flag(flags, '&'));
+	else if (!ft_strcmp(flag, "--recursive"))
+		return (update_flag(flags, 'R'));
+	else
+	{
+		ft_printf("ft_ls : the option << %s >> is not valid.\n", flag);
+		ft_printf("Type << ft_ls --help >> for more informations.\n");
+		return (1);
+	}
+}
+
 static int	parse_flag(t_flags *flags, char *flag)
 {
 	int	i;
 
-	if (!ft_strcmp("--help", flag))
+	if (flag[1] == '-')
 	{
-		print_help();
-		return (2);
+		i = parse_long_flag(flags, flag);
+		return (i);
 	}
 	i = 1;
 	while (flag[i])

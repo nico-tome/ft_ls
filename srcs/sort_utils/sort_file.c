@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/05 17:35:50 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/06 21:56:13 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/08 11:03:07 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void	insert_by_time(t_dir **dir, t_file *new)
 		return ;
 	}
 	curr = (*dir)->files;
-	while (curr->next && new->stat.st_mtim.tv_sec < curr->next->stat.st_mtim.tv_sec)
+	while (curr->next && new->stat.st_mtim.tv_sec <= curr->next->stat.st_mtim.tv_sec)
 		curr = curr->next;
 	new->next = curr->next;
 	curr->next = new;

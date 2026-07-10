@@ -6,11 +6,26 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 12:38:04 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/06 22:33:57 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/08 13:00:40 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
+
+static char	*create_sort_name(t_ctx *ctx, char *name)
+{
+	char	*sorting_name;
+	int		size;
+
+	size = ft_strlen(name);
+	if (ctx->flags.a_flag && name[size - 1] == '.')
+		sorting_name = ft_strdup(name);
+	else
+		sorting_name = ft_strdup_alnum(name);
+	if (!ctx->flags.uu_flag)
+		ft_strlowerise(&sorting_name);
+	return (sorting_name);
+}
 
 static t_dir	*create_new_dir(t_ctx *ctx, char *path)
 {
@@ -26,9 +41,7 @@ static t_dir	*create_new_dir(t_ctx *ctx, char *path)
 	new->next = NULL;
 	new->content = NULL;
 	new->path = ft_strdup(path);
-	new->sorting_path = ft_strdup(path);
-	if (!ctx->flags.uu_flag)
-		ft_strlowerise(&new->sorting_path);
+	new->sorting_path = create_sort_name(ctx, path);
 	return (new);
 }
 
@@ -36,16 +49,14 @@ static t_file	*create_new_file(t_ctx *ctx, char *path, struct dirent *entry)
 {
 	t_file	*new_file;
 
-	if (!ctx->flags.a_flag && !ctx->flags.ur_flag && entry->d_name[0] == '.')
+	if (!ctx->flags.a_flag && !ctx->flags.ua_flag && !ctx->flags.ur_flag && entry->d_name[0] == '.')
 		return (NULL);
 	new_file = malloc(sizeof(t_file));
 	if (!new_file)
 		return (NULL);
 	new_file->name = ft_strdup(entry->d_name);
 	new_file->path = ft_strdup(path);
-	new_file->sorting_name = ft_strdup(path);
-	if (!ctx->flags.uu_flag)
-		ft_strlowerise(&new_file->sorting_name);
+	new_file->sorting_name = create_sort_name(ctx, entry->d_name);
 	new_file->next = NULL;
 	lstat(path, &new_file->stat);
 	return (new_file);
@@ -96,13 +107,15 @@ static void	fill_dir(t_ctx *ctx, t_dir *element, DIR *dir)
 static void	rec(t_ctx *ctx, t_dir **element)
 {
 	t_file	*file;
+	int		len;
 
 	file = (*element)->files;
 	while (file)
 	{
+		len = ft_strlen(file->name);
 		if (ctx->flags.debugg_flag)
 			print_debugg_file(file);
-		if (S_ISDIR(file->stat.st_mode) && file->name[0] != '.')
+		if (S_ISDIR(file->stat.st_mode) && file->name[len - 1] != '.')
 			read_target(ctx, file->path, &((*element)->content), NULL);
 		file = file->next;
 	}
