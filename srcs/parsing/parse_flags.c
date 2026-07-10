@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:34:51 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/09 21:38:32 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 13:35:34 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ static int	update_flag(t_flags *flags, char flag)
 		flags->p_flag = 1;
 	else if (flag == '1')
 		flags->one_flag = 1;
-	else if (flag == 'D')
-		flags->debugg_flag = 1;
 	else if (flag == 'e')
 		flags->e_flag = 1;
 	else if (flag == 'U')

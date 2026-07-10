@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:34:09 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/09 21:35:37 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 13:39:01 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,4 +182,9 @@ t_padding	get_padding(t_ctx *ctx, t_file *files)
 		files = files->next;
 	}
 	return (padd);
+}
+
+void	malloc_error(char *file, int line)
+{
+	ft_printf("%s[MALLOC ERROR] Error in %s at line %d%s\n", RED, file, line, RESET);
 }

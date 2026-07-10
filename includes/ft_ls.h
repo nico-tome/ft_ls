@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 13:19:34 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/10 12:07:15 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 13:36:56 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ typedef struct s_flags
 	int		uu_flag;		// -U --keep-uppercase sort while keeping lowercase and uppercase
 	int		only_dir_flag;	// --only-dir show only directorys
 	int		no_color_flag;	// --no-color disable color
-	int		debugg_flag;	// -D use debugg print (mine)
 }			t_flags;
 
 typedef struct s_padding
@@ -108,8 +107,6 @@ void	insert_new_file(t_ctx *ctx, t_dir **elements, t_file *new_file);
 // print utils
 void		print_help(void);
 void		print_ls(t_ctx *ctx, t_dir **files, t_dir **dir);
-void		print_debugg_read_element(char *target, char *path);
-void		print_debugg_file(t_file *file);
 void		malloc_error(char *file, int line);
 int			check_print(t_file *file, t_flags *flags);
 int			check_long_format(t_flags *flags);

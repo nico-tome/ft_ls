@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 12:38:04 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/08 13:00:40 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 13:36:12 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,6 @@ static void	rec(t_ctx *ctx, t_dir **element)
 	while (file)
 	{
 		len = ft_strlen(file->name);
-		if (ctx->flags.debugg_flag)
-			print_debugg_file(file);
 		if (S_ISDIR(file->stat.st_mode) && file->name[len - 1] != '.')
 			read_target(ctx, file->path, &((*element)->content), NULL);
 		file = file->next;

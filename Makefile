@@ -7,7 +7,6 @@ SRC			:=	main.c \
 				free_utils/free_utils.c \
 				parsing/parse_flags.c \
 				print_utils/print_utils.c \
-				print_utils/print_debugg_utils.c \
 				print_utils/print_ls.c \
 				read_utils/read_utils.c \
 				sort_utils/sort_dir.c \
@@ -57,8 +56,6 @@ banner: # replace this banner with yours
 $(NAME): ${LIBS} ${OBJ}
 	@${CC} -o ${NAME} ${FLAGS} ${OBJ} ${LIBS}
 	@printf "${_BOLD}$(NAME)${_RESET} compiled ${_GREEN}${_BOLD}successfully${_RESET}\n\n"
-#	@$(MAKE) --no-print-directory expose_flags 2>/dev/null || true
-# uncomment this if you want to expose the flag of your project, else remove this line.
 
 $(LIBS):
 	@make --no-print-directory -C lib/libft
@@ -79,49 +76,22 @@ fclean: clean
 	@rm -f ${LIBS}
 	@rm -f ${NAME}
 	@printf "Cleaned ${_BOLD}${NAME}${_RESET} !\n\n"
-#	@$(MAKE) --no-print-directory clean_flags 2>/dev/null || true
-# remove this line if you don't need to expose your program flag
 
 install: $(NAME)
-	@DEST=$$(printf "%s\n" "$$PATH" | tr ':' '\n' | while read d; do \
-		[ -d "$$d" ] && [ -w "$$d" ] && { echo "$$d"; break; }; \
-	done); \
-	if [ -z "$$DEST" ]; then \
-		printf "${_RED}No writable directory found in \$$PATH.${_RESET}\n"; \
-		printf "Try installing manually or use sudo.\n"; \
-		exit 1; \
-	fi; \
-	install -m 755 $(NAME) "$$DEST/$(NAME)"; \
-	printf "${_GREEN}Installed${_RESET} in $$DEST\n"
-	@printf "${_YELLOW}Reopen your terminal or run \"hash -r\" to refresh the command cache.${_RESET}\n"
-	@printf "${_YELLOW}Note: If you want to install in a custom directory, use the PREFIX variable.${_RESET}\n"
+	@mkdir -p $(BINDIR)
+	@install -m 755 $(NAME) $(BINDIR)/$(NAME)
+	@printf "${_GREEN}Installed${_RESET} $(NAME) in ${_BOLD}$(BINDIR)${_RESET}\n"
+	@printf "${_YELLOW}If ${_BOLD}$(BINDIR)${_RESET}${_YELLOW} is not in your PATH, add:${_RESET}\n"
+	@printf "  export PATH=\"$(BINDIR):\$$PATH\"\n"
+	@printf "${_YELLOW}Run \"hash -r\" or reopen your terminal if the command is not found.${_RESET}\n"
 
 uninstall:
-	@FOUND=0; \
-	for d in $$(printf "%s\n" "$$PATH" | tr ':' '\n'); do \
-		if [ -f "$$d/$(NAME)" ]; then \
-			rm -f "$$d/$(NAME)"; \
-			printf "${_GREEN}Removed${_RESET} from $$d\n"; \
-			FOUND=1; \
-		fi; \
-	done; \
-	if [ $$FOUND -eq 0 ]; then \
-		printf "${_YELLOW}$(NAME) is not installed in any directory from \$$PATH.${_RESET}\n"; \
+	@if [ -f "$(BINDIR)/$(NAME)" ]; then \
+		rm -f "$(BINDIR)/$(NAME)"; \
+		printf "${_GREEN}Removed${_RESET} $(BINDIR)/$(NAME)\n"; \
+	else \
+		printf "${_YELLOW}$(NAME) is not installed in $(BINDIR).${_RESET}\n"; \
 	fi
-
-
-# Uncomment this block if you want to expose your program flags after build
-#
-# PROGRAM_FLAGS_FILE := .program_flags
-# PROGRAM_FLAGS := -a -b --example
-#
-# expose_flags:
-# 	@echo "$(PROGRAM_FLAGS)" > $(PROGRAM_FLAGS_FILE)
-# 	@printf "${_GRAY}Program flags exposed in ${_ITALIC}$(PROGRAM_FLAGS_FILE)${_RESET}\n"
-#
-# clean_flags:
-# 	@rm -f $(PROGRAM_FLAGS_FILE)
-
 
 help:
 	@printf "\n${_BOLD}${_PURPLE}Project Makefile Help${_RESET}\n"
@@ -183,5 +153,4 @@ help:
 
 re: fclean all
 
-# can remove install and uninstall if you dont use it
 .PHONY: all clean fclean re banner no-banner help install uninstall
