@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:34:51 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/10 13:35:34 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 16:01:26 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static int	add_arg(t_arg *args, char *arg)
 	return (0);
 }
 
-static int	parse_long_flag(t_flags *flags, char *flag)
+static int	parse_long_flag(int *exit_code, t_flags *flags, char *flag)
 {
 	if (!ft_strcmp(flag, "--help"))
 	{
@@ -116,17 +116,18 @@ static int	parse_long_flag(t_flags *flags, char *flag)
 	{
 		ft_printf("ft_ls : the option << %s >> is not valid.\n", flag);
 		ft_printf("Type << ft_ls --help >> for more informations.\n");
+		*exit_code = 2;
 		return (1);
 	}
 }
 
-static int	parse_flag(t_flags *flags, char *flag)
+static int	parse_flag(int *exit_code, t_flags *flags, char *flag)
 {
 	int	i;
 
 	if (flag[1] == '-')
 	{
-		i = parse_long_flag(flags, flag);
+		i = parse_long_flag(exit_code, flags, flag);
 		return (i);
 	}
 	i = 1;
@@ -134,9 +135,10 @@ static int	parse_flag(t_flags *flags, char *flag)
 	{
 		if (!ft_strchr(VALID_FLAGS, flag[i]))
 		{
+			*exit_code = 2;
 			write(2, "ft_ls : invalid option '", 24);
 			write(2, &flag[i], 1);
-			write(2, "'\nType « ls -h » for more infos.\n", 33);
+			write(2, "'\nType « ls -h » for more infos.\n", 35);
 			return (1);
 		}
 		update_flag(flags, flag[i]);
@@ -154,7 +156,7 @@ int	ft_init_flags(t_ctx *ctx, int ac, char **av)
 	{
 		if (av[i][0] == '-')
 		{
-			if (parse_flag(&ctx->flags, av[i]))
+			if (parse_flag(&ctx->exit_code, &ctx->flags, av[i]))
 			{
 				free_args(ctx->args);
 				return (1);

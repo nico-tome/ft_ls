@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 14:46:42 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/06 20:46:06 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 15:54:50 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	main(int ac, char **av)
 	if (setup(&ctx))
 		return (1);
 	if (ft_init_flags(&ctx, ac, av))
-		return (1);
+		return (ctx.exit_code);
 	if (!ctx.args->path)
 		ctx.args->path = ft_strdup(".\0");
 	target = ctx.args;

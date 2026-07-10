@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 12:38:04 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/10 13:36:12 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 16:09:31 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,12 +119,29 @@ static void	rec(t_ctx *ctx, t_dir **element)
 	}
 }
 
+static int	check_path(char *path)
+{
+	struct stat	st;
+
+	if (lstat(path, &st) == -1)
+	{
+		perror(path);
+		return (0);
+	}
+	return (1);
+}
+
 void	read_target(t_ctx *ctx, char *path, t_dir **elements, t_dir **files)
 {
 	t_dir	*new_element;
 	t_file	*new_file;
 	DIR		*dir;
 
+	if (!check_path(path))
+	{
+		ctx->exit_code = 2;
+		return ;
+	}
 	dir = ctx->flags.d_flag ? NULL : opendir(path);
 	if (!dir)
 	{
