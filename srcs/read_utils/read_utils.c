@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 12:38:04 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/10 16:09:31 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/10 16:19:17 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,8 @@ static void	rec(t_ctx *ctx, t_dir **element)
 	while (file)
 	{
 		len = ft_strlen(file->name);
-		if (S_ISDIR(file->stat.st_mode) && file->name[len - 1] != '.')
+		if (S_ISDIR(file->stat.st_mode) && file->name[len - 1] != '.' &&
+			(file->name[0] != '.' || ctx->flags.a_flag || ctx->flags.ua_flag))
 			read_target(ctx, file->path, &((*element)->content), NULL);
 		file = file->next;
 	}
