@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:34:09 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/10 13:39:01 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/18 13:39:35 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@ void	get_long_value(t_flags *flags, t_file *file, char **name, char **group)
 	if (flags->n_flag)
 	{
 		*name = ft_itoa(getpwuid(file->stat.st_uid)->pw_uid);
-		*group = ft_itoa(getpwuid(file->stat.st_gid)->pw_gid);
-
+		*group = ft_itoa(getgrgid(file->stat.st_gid)->gr_gid);
 	}
 	else
 	{
