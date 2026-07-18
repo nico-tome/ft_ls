@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/05 17:35:50 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/08 11:03:07 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/18 20:29:31 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ static void	insert_by_name(t_dir **elements, t_file *new)
 {
 	t_file	*curr;
 
-	if (ft_strcmp(new->sorting_name, (*elements)->files->sorting_name) < 0)
+	if (strcoll(new->sorting_name, (*elements)->files->sorting_name) < 0)
 	{
 		new->next = (*elements)->files;
 		(*elements)->files = new;
 		return ;
 	}
 	curr = (*elements)->files;
-	while (curr->next && ft_strcmp(new->sorting_name, curr->next->sorting_name) >= 0)
+	while (curr->next && strcoll(new->sorting_name, curr->next->sorting_name) >= 0)
 		curr = curr->next;
 	new->next = curr->next;
 	curr->next = new;
@@ -33,14 +33,14 @@ static void	insert_by_reverse_name(t_dir **elements, t_file *new)
 {
 	t_file	*curr;
 
-	if (ft_strcmp(new->sorting_name, (*elements)->files->sorting_name) > 0)
+	if (strcoll(new->sorting_name, (*elements)->files->sorting_name) > 0)
 	{
 		new->next = (*elements)->files;
 		(*elements)->files = new;
 		return ;
 	}
 	curr = (*elements)->files;
-	while (curr->next && ft_strcmp(new->sorting_name, curr->next->sorting_name) <= 0)
+	while (curr->next && strcoll(new->sorting_name, curr->next->sorting_name) <= 0)
 		curr = curr->next;
 	new->next = curr->next;
 	curr->next = new;

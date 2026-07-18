@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/05 14:02:13 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/06 19:20:30 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/18 20:28:09 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <pwd.h>
 # include <grp.h>
 # include <time.h>
+# include <string.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include "../lib/libft/libft.h"

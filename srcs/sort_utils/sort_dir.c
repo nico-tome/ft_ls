@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/05 16:38:30 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/05 19:49:09 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/18 20:27:34 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ static void	insert_by_name(t_dir **elements, t_dir *new)
 {
 	t_dir	*curr;
 
-	if (ft_strcmp(new->sorting_path, (*elements)->sorting_path) < 0)
+	if (strcoll(new->sorting_path, (*elements)->sorting_path) < 0)
 	{
 		new->next = *elements;
 		*elements = new;
 		return ;
 	}
 	curr = *elements;
-	while (curr->next && ft_strcmp(new->sorting_path, curr->sorting_path) >= 0)
+	while (curr->next && strcoll(new->sorting_path, curr->sorting_path) >= 0)
 		curr = curr->next;
 	new->next = curr->next;
 	curr->next = new;
@@ -33,14 +33,14 @@ static void	insert_by_reverse_name(t_dir **elements, t_dir *new)
 {
 	t_dir	*curr;
 
-	if (ft_strcmp(new->sorting_path, (*elements)->sorting_path) > 0)
+	if (strcoll(new->sorting_path, (*elements)->sorting_path) > 0)
 	{
 		new->next = *elements;
 		*elements = new;
 		return ;
 	}
 	curr = *elements;
-	while (curr->next && ft_strcmp(new->path, curr->path) <= 0)
+	while (curr->next && strcoll(new->path, curr->path) <= 0)
 		curr = curr->next;
 	new->next = curr->next;
 	curr->next = new;

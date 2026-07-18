@@ -6,11 +6,12 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 12:38:04 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/10 16:19:17 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/18 20:30:21 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
+#include <sys/stat.h>
 
 static char	*create_sort_name(t_ctx *ctx, char *name)
 {
@@ -21,9 +22,7 @@ static char	*create_sort_name(t_ctx *ctx, char *name)
 	if (ctx->flags.a_flag && name[size - 1] == '.')
 		sorting_name = ft_strdup(name);
 	else
-		sorting_name = ft_strdup_alnum(name);
-	if (!ctx->flags.uu_flag)
-		ft_strlowerise(&sorting_name);
+		sorting_name = ft_strdup(name);
 	return (sorting_name);
 }
 
@@ -104,6 +103,20 @@ static void	fill_dir(t_ctx *ctx, t_dir *element, DIR *dir)
 	}
 }
 
+static int	check_perm(char *path)
+{
+	DIR	*dir;
+
+	dir = opendir(path);
+	if (!dir)
+	{
+		perror(path);
+		return (0);
+	}
+	closedir(dir);
+	return (1);
+}
+
 static void	rec(t_ctx *ctx, t_dir **element)
 {
 	t_file	*file;
@@ -114,7 +127,7 @@ static void	rec(t_ctx *ctx, t_dir **element)
 	{
 		len = ft_strlen(file->name);
 		if (S_ISDIR(file->stat.st_mode) && file->name[len - 1] != '.' &&
-			(file->name[0] != '.' || ctx->flags.a_flag || ctx->flags.ua_flag))
+			(file->name[0] != '.' || ctx->flags.a_flag || ctx->flags.ua_flag) && check_perm(file->path))
 			read_target(ctx, file->path, &((*element)->content), NULL);
 		file = file->next;
 	}
