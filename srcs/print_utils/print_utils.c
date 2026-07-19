@@ -6,7 +6,7 @@
 /*   By: ntome <ntome@42angouleme.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:34:09 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/18 13:39:35 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/19 20:07:32 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ void	get_color(t_flags *flags, t_file *file, char **color)
 		else
 			*color = RESET;
 	}
+	else if (type == 'l')
+		*color = CYAN;
 }
 
 void	print_permission(t_file *file)

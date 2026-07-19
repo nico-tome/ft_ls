@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/06 18:34:14 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/09 21:32:17 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/19 19:26:12 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,20 @@ static void	print_padd(int n)
 	i = 0;
 	while (i++ < n)
 		ft_printf(" ");
+}
+
+static int	has_space(char *name)
+{
+	int	i;
+
+	i = 0;
+	while (name[i])
+	{
+		if (name[i] == ' ')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 static void	print_long_file(t_flags *flags, t_file *file, t_padding *padd)
@@ -95,9 +109,13 @@ static void	print_file(t_ctx *ctx, t_file *file, t_padding *padd)
 	ft_printf("%s", color);
 	if (ctx->flags.uq_flag)
 		ft_printf("\"");
+	if (has_space(file->name) && !ctx->flags.uq_flag)
+		ft_printf("'");
 	ft_printf("%s", file->name);
 	if (ctx->flags.uq_flag)
 		ft_printf("\"");
+	if (has_space(file->name) && !ctx->flags.uq_flag)
+		ft_printf("'");
 	ft_printf("%s", RESET);
 	if (ctx->flags.p_flag && S_ISDIR(file->stat.st_mode))
 		ft_printf("/");

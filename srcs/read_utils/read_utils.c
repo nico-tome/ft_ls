@@ -6,7 +6,7 @@
 /*   By: ntome <nicolas@42angouleme.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 12:38:04 by ntome             #+#    #+#             */
-/*   Updated: 2026/07/18 20:30:21 by ntome            ###   ########.fr       */
+/*   Updated: 2026/07/19 19:29:03 by ntome            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	read_target(t_ctx *ctx, char *path, t_dir **elements, t_dir **files)
 	t_file	*new_file;
 	DIR		*dir;
 
-	if (!check_path(path))
+	if (!check_path(path) || !check_perm(path))
 	{
 		ctx->exit_code = 2;
 		return ;
